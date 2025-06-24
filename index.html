@@ -11,7 +11,7 @@
     
     <style>
         /* ===========================================
-           GLOBAL STYLES & CSS VARIABLES
+            GLOBAL STYLES & CSS VARIABLES
         =========================================== */
         :root {
             /* Cyberpunk Color Palette */
@@ -57,6 +57,19 @@
             --spacing-xl: 3rem;
         }
         
+        /* Light Mode Theme */
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #eef2f7;
+            --bg-tertiary: #dce4f2;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            
+            --text-primary: #0a0a0a;
+            --text-secondary: #333333;
+            
+            --gradient-bg: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        
         /* Reset & Base Styles */
         * {
             margin: 0;
@@ -71,10 +84,11 @@
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         /* ===========================================
-           UTILITY CLASSES
+            UTILITY CLASSES
         =========================================== */
         .container {
             max-width: 1200px;
@@ -99,7 +113,7 @@
         }
         
         /* ===========================================
-           ANIMATED BACKGROUND
+            ANIMATED BACKGROUND
         =========================================== */
         .animated-bg {
             position: fixed;
@@ -111,6 +125,10 @@
             opacity: 0.1;
         }
         
+        body.light-mode .animated-bg {
+            opacity: 0.2;
+        }
+
         .animated-bg::before {
             content: '';
             position: absolute;
@@ -131,7 +149,7 @@
         }
         
         /* ===========================================
-           HEADER SECTION
+            HEADER SECTION
         =========================================== */
         .header {
             position: fixed;
@@ -143,6 +161,11 @@
             border-bottom: 1px solid var(--neon-cyan);
             z-index: 1000;
             padding: var(--spacing-sm) 0;
+            transition: background 0.3s ease;
+        }
+
+        body.light-mode .header {
+            background: rgba(255, 255, 255, 0.8);
         }
         
         .header-content {
@@ -164,12 +187,15 @@
             border: none;
             padding: var(--spacing-xs) var(--spacing-sm);
             border-radius: 25px;
-            color: var(--text-primary);
+            color: #fff; /* Always white for readability on gradient */
             cursor: pointer;
             font-family: var(--font-secondary);
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: var(--glow-cyan);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
         
         .dark-mode-toggle:hover {
@@ -178,7 +204,7 @@
         }
         
         /* ===========================================
-           HERO SECTION
+            HERO SECTION
         =========================================== */
         .hero {
             padding: calc(80px + var(--spacing-xl)) 0 var(--spacing-xl) 0;
@@ -243,7 +269,7 @@
         }
         
         /* ===========================================
-           SOCIAL LINKS
+            SOCIAL LINKS
         =========================================== */
         .social-links {
             display: flex;
@@ -292,7 +318,7 @@
         }
         
         /* ===========================================
-           ACTION BUTTONS SECTION
+            ACTION BUTTONS SECTION
         =========================================== */
         .action-buttons {
             display: grid;
@@ -355,17 +381,21 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
         }
+
+        body.light-mode .action-btn:hover {
+             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
         
         .action-btn:hover::before {
             opacity: 1;
         }
-        
+
         .action-btn i {
             font-size: 1.2rem;
         }
         
         /* ===========================================
-           NAVIGATION SECTION
+            NAVIGATION SECTION
         =========================================== */
         .navigation-section {
             display: grid;
@@ -391,6 +421,11 @@
             justify-content: center;
             min-height: 50px;
         }
+
+        body.light-mode .nav-btn {
+            background: rgba(238, 242, 247, 0.8);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
         
         .nav-btn:hover {
             background: rgba(60, 60, 80, 0.9);
@@ -398,9 +433,13 @@
             color: var(--text-primary);
             transform: translateY(-2px);
         }
+
+        body.light-mode .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
         
         /* ===========================================
-           SUPPORT SECTION
+            SUPPORT SECTION
         =========================================== */
         .support-section {
             text-align: center;
@@ -433,13 +472,18 @@
         }
         
         /* ===========================================
-           FOOTER SECTION
+            FOOTER SECTION
         =========================================== */
         .footer {
             background: rgba(10, 10, 10, 0.9);
             border-top: 1px solid var(--neon-cyan);
             padding: var(--spacing-xl) 0;
             text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        body.light-mode .footer {
+            background: rgba(255, 255, 255, 0.8);
         }
         
         .footer-statement {
@@ -463,7 +507,7 @@
         }
         
         /* ===========================================
-           RESPONSIVE DESIGN - MOBILE FIRST
+            RESPONSIVE DESIGN - MOBILE FIRST
         =========================================== */
         
         /* Small screens (mobile) - 320px and up */
@@ -551,31 +595,36 @@
         }
         
         /* ===========================================
-           LOADING ANIMATIONS
+            LOADING & INTERACTIVE ANIMATIONS
         =========================================== */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
-            animation: fadeIn 0.8s ease-out forwards;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         
-        @keyframes fadeIn {
+        /* Stagger animation delays using transition-delay */
+        .fade-in.is-visible:nth-child(1) { transition-delay: 0.1s; }
+        .fade-in.is-visible:nth-child(2) { transition-delay: 0.2s; }
+        .fade-in.is-visible:nth-child(3) { transition-delay: 0.3s; }
+        .fade-in.is-visible:nth-child(4) { transition-delay: 0.4s; }
+        .fade-in.is-visible:nth-child(5) { transition-delay: 0.5s; }
+        .fade-in.is-visible:nth-child(6) { transition-delay: 0.6s; }
+
+        @keyframes ripple {
             to {
-                opacity: 1;
-                transform: translateY(0);
+                transform: scale(4);
+                opacity: 0;
             }
         }
         
-        /* Stagger animation delays */
-        .fade-in:nth-child(1) { animation-delay: 0.1s; }
-        .fade-in:nth-child(2) { animation-delay: 0.2s; }
-        .fade-in:nth-child(3) { animation-delay: 0.3s; }
-        .fade-in:nth-child(4) { animation-delay: 0.4s; }
-        .fade-in:nth-child(5) { animation-delay: 0.5s; }
-        .fade-in:nth-child(6) { animation-delay: 0.6s; }
-        
         /* ===========================================
-           ACCESSIBILITY IMPROVEMENTS
+            ACCESSIBILITY IMPROVEMENTS
         =========================================== */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -586,12 +635,20 @@
         }
         
         /* Focus styles for keyboard navigation */
+        .keyboard-navigation *:focus,
         .action-btn:focus,
         .nav-btn:focus,
         .support-btn:focus,
         .social-link:focus {
             outline: 2px solid var(--neon-cyan);
             outline-offset: 2px;
+        }
+
+        /* Touch feedback for mobile */
+        .touch-device .action-btn:active,
+        .touch-device .nav-btn:active,
+        .touch-device .support-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -605,7 +662,8 @@
             <div class="header-content">
                 <div class="logo">ZOTO.ZONE</div>
                 <button class="dark-mode-toggle" id="darkModeToggle">
-                    <i class="fas fa-adjust"></i> Dark Mode
+                    <i class="fas fa-moon"></i>
+                    <span id="theme-toggle-text">Dark Mode</span>
                 </button>
             </div>
         </div>
@@ -617,7 +675,7 @@
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <!-- Profile Image (using icon since we don't have the actual image) -->
+                    <!-- Profile Image (using icon) -->
                     <div class="profile-image fade-in">
                         <i class="fas fa-user-ninja"></i>
                     </div>
@@ -630,7 +688,7 @@
                     
                     <!-- Hero Description -->
                     <p class="hero-description fade-in">
-                        How much wood could a woodchuck chuck if a woodchuck could chuck wood?
+                        The Matrix computer knows your fears—switch off the mind, turn on the now, and walk your own timeline.
                     </p>
                     
                     <!-- Social Links -->
@@ -652,35 +710,18 @@
         <!-- Action Buttons Section -->
         <section class="container">
             <div class="action-buttons">
-                <!-- Generate Personal Declaration Button -->
-                <a href="#" class="action-btn gradient-primary fade-in">
-                    <i class="fas fa-magic"></i>
-                    Generate a Personal Declaration
-                </a>
-                
-                <!-- Latest YouTube Video Button -->
-                <a href="#" class="action-btn gradient-secondary fade-in">
-                    <i class="fab fa-youtube"></i>
-                    Latest YouTube Video
-                </a>
-                
-                <!-- Secret To Everything Button -->
-                <a href="#" class="action-btn gradient-secondary fade-in">
-                    <i class="fas fa-key"></i>
-                    Secret To Everything
-                </a>
-                
-                <!-- Aura Reading App Button -->
-                <a href="#" class="action-btn gradient-secondary fade-in">
-                    <i class="fas fa-eye"></i>
-                    Aura Reading App
-                </a>
+                <!-- Buttons... -->
+                <a href="#" class="action-btn gradient-primary fade-in"><i class="fas fa-magic"></i>Generate a Personal Declaration</a>
+                <a href="#" class="action-btn gradient-secondary fade-in"><i class="fab fa-youtube"></i>Latest YouTube Video</a>
+                <a href="#" class="action-btn gradient-secondary fade-in"><i class="fas fa-key"></i>Secret To Everything</a>
+                <a href="#" class="action-btn gradient-secondary fade-in"><i class="fas fa-eye"></i>Aura Reading App</a>
             </div>
         </section>
         
         <!-- Navigation Section -->
         <section class="container">
             <div class="navigation-section">
+                <!-- Nav Links... -->
                 <a href="#" class="nav-btn fade-in">YouTube Channel</a>
                 <a href="#" class="nav-btn fade-in">Telegram Blog Chat</a>
                 <a href="#" class="nav-btn fade-in">TikTok Videos</a>
@@ -721,46 +762,37 @@
     
     <!-- JavaScript for Interactive Features -->
     <script>
-        // ============================================
-        // DOM CONTENT LOADED EVENT LISTENER
-        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             initializeWebsite();
         });
-        
-        // ============================================
-        // MAIN INITIALIZATION FUNCTION
-        // ============================================
+
         function initializeWebsite() {
             initializeDarkModeToggle();
             initializeAnimations();
             initializeInteractiveElements();
-            initializeResponsiveFeatures();
         }
-        
+
         // ============================================
         // DARK MODE TOGGLE FUNCTIONALITY
         // ============================================
         function initializeDarkModeToggle() {
             const darkModeToggle = document.getElementById('darkModeToggle');
             const body = document.body;
-            
-            // Check for saved dark mode preference
-            const savedMode = localStorage.getItem('darkMode');
-            if (savedMode === 'enabled') {
+
+            // Apply saved theme on page load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
                 body.classList.add('light-mode');
-                updateToggleText(darkModeToggle, false);
             }
-            
-            // Dark mode toggle event listener
+            updateToggleText(darkModeToggle);
+
+            // Theme toggle event listener
             darkModeToggle.addEventListener('click', function() {
                 body.classList.toggle('light-mode');
-                const isLightMode = body.classList.contains('light-mode');
-                
-                // Save preference to localStorage
-                localStorage.setItem('darkMode', isLightMode ? 'enabled' : 'disabled');
-                updateToggleText(darkModeToggle, !isLightMode);
-                
+                const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+                localStorage.setItem('theme', currentTheme);
+                updateToggleText(darkModeToggle);
+
                 // Add visual feedback
                 this.style.transform = 'scale(0.95)';
                 setTimeout(() => {
@@ -768,90 +800,74 @@
                 }, 150);
             });
         }
-        
-        // Update toggle button text and icon
-        function updateToggleText(toggle, isDarkMode) {
+
+        // Update toggle button text and icon based on current theme
+        function updateToggleText(toggle) {
             const icon = toggle.querySelector('i');
-            const text = toggle.childNodes[toggle.childNodes.length - 1];
+            const textElement = document.getElementById('theme-toggle-text');
+            const isLightMode = document.body.classList.contains('light-mode');
             
-            if (isDarkMode) {
-                icon.className = 'fas fa-moon';
-                text.textContent = ' Dark Mode';
-            } else {
+            if (isLightMode) {
                 icon.className = 'fas fa-sun';
-                text.textContent = ' Light Mode';
+                textElement.textContent = 'Light Mode';
+            } else {
+                icon.className = 'fas fa-moon';
+                textElement.textContent = 'Dark Mode';
             }
         }
-        
+
         // ============================================
         // ANIMATION SYSTEM
         // ============================================
         function initializeAnimations() {
-            // Intersection Observer for fade-in animations
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
             };
             
-            const observer = new IntersectionObserver((entries) => {
+            const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing after animation
                     }
                 });
             }, observerOptions);
             
-            // Observe all fade-in elements
             const fadeElements = document.querySelectorAll('.fade-in');
             fadeElements.forEach(el => {
-                el.style.animationPlayState = 'paused';
                 observer.observe(el);
             });
         }
-        
+
         // ============================================
         // INTERACTIVE ELEMENTS
         // ============================================
         function initializeInteractiveElements() {
-            // Add click handlers for action buttons
+            // Add click handlers for ripple effect
             const actionButtons = document.querySelectorAll('.action-btn');
             actionButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
-                    // Add ripple effect
                     createRippleEffect(e, this);
-                    
-                    // Add clicked animation
-                    this.style.transform = 'translateY(-5px) scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = 'translateY(-5px) scale(1)';
-                    }, 100);
                 });
             });
-            
-            // Add hover effects for social links
-            const socialLinks = document.querySelectorAll('.social-link');
-            socialLinks.forEach(link => {
-                link.addEventListener('mouseenter', function() {
-                    this.style.boxShadow = '0 0 30px currentColor';
-                });
-                
-                link.addEventListener('mouseleave', function() {
-                    this.style.boxShadow = '';
-                });
-            });
-            
-            // Add keyboard navigation support
+
+            // Add keyboard navigation class
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Tab') {
                     document.body.classList.add('keyboard-navigation');
                 }
             });
-            
             document.addEventListener('mousedown', function() {
                 document.body.classList.remove('keyboard-navigation');
             });
+
+            // Initialize touch features if on a touch device
+             if ('ontouchstart' in window) {
+                document.body.classList.add('touch-device');
+            }
         }
-        
+
         // Create ripple effect on button click
         function createRippleEffect(event, element) {
             const ripple = document.createElement('span');
@@ -861,20 +877,13 @@
             const y = event.clientY - rect.top - size / 2;
             
             ripple.style.cssText = `
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.3);
-                pointer-events: none;
-                transform: scale(0);
-                animation: ripple 0.6s linear;
-                left: ${x}px;
-                top: ${y}px;
-                width: ${size}px;
-                height: ${size}px;
+                position: absolute; border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3); pointer-events: none;
+                transform: scale(0); animation: ripple 0.6s linear;
+                left: ${x}px; top: ${y}px;
+                width: ${size}px; height: ${size}px;
             `;
             
-            element.style.position = 'relative';
-            element.style.overflow = 'hidden';
             element.appendChild(ripple);
             
             setTimeout(() => {
@@ -883,139 +892,16 @@
         }
         
         // ============================================
-        // RESPONSIVE FEATURES
-        // ============================================
-        function initializeResponsiveFeatures() {
-            // Mobile menu toggle (if needed in future updates)
-            let isMobile = window.innerWidth <= 768;
-            
-            // Resize event listener for responsive adjustments
-            window.addEventListener('resize', function() {
-                const wasMobile = isMobile;
-                isMobile = window.innerWidth <= 768;
-                
-                // Perform responsive adjustments if needed
-                if (wasMobile !== isMobile) {
-                    adjustLayoutForScreenSize();
-                }
-            });
-            
-            // Touch support for mobile devices
-            if ('ontouchstart' in window) {
-                document.body.classList.add('touch-device');
-                initializeTouchFeatures();
-            }
-        }
-        
-        // Adjust layout based on screen size
-        function adjustLayoutForScreenSize() {
-            const actionButtons = document.querySelector('.action-buttons');
-            const navigationSection = document.querySelector('.navigation-section');
-            
-            if (window.innerWidth <= 480) {
-                // Mobile adjustments
-                actionButtons.style.gridTemplateColumns = '1fr';
-                navigationSection.style.gridTemplateColumns = '1fr';
-            } else if (window.innerWidth <= 768) {
-                // Tablet adjustments
-                actionButtons.style.gridTemplateColumns = 'repeat(2, 1fr)';
-                navigationSection.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            } else {
-                // Desktop adjustments
-                actionButtons.style.gridTemplateColumns = '';
-                navigationSection.style.gridTemplateColumns = '';
-            }
-        }
-        
-        // Initialize touch-specific features
-        function initializeTouchFeatures() {
-            // Add touch feedback for buttons
-            const interactiveElements = document.querySelectorAll('.action-btn, .nav-btn, .support-btn, .social-link');
-            
-            interactiveElements.forEach(element => {
-                element.addEventListener('touch Start', function() {
-                    this.style.transform = 'scale(0.98)';
-                });
-                
-                element.addEventListener('touchend', function() {
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 100);
-                });
-            });
-        }
-        
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
-        
-        // Smooth scroll to section (for future navigation updates)
-        function smoothScrollTo(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
-        
-        // Debounce function for performance optimization
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-        
-        // Add CSS keyframes for ripple effect
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-            
-            .keyboard-navigation *:focus {
-                outline: 2px solid var(--neon-cyan);
-                outline-offset: 2px;
-            }
-            
-            .touch-device .action-btn:active,
-            .touch-device .nav-btn:active,
-            .touch-device .support-btn:active {
-                transform: scale(0.98);
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // ============================================
         // CONSOLE MESSAGE FOR DEVELOPERS
         // ============================================
         console.log(`
             🎮 DAVID ZOTO - FUTURISTIC GAMER PORTAL
             ========================================
             
-            Built with modern web technologies:
-            • HTML5 semantic structure
-            • CSS3 with custom properties and animations
-            • Vanilla JavaScript for interactivity
-            • Mobile-first responsive design
-            • Accessibility features included
-            
-            Future update areas:
-            • Social media API integrations
-            • Dynamic content loading
-            • User preference persistence
-            • Enhanced animations
-            • Progressive Web App features
+            Built with modern web technologies and now streamlined!
+            • HTML5, CSS3 (with Custom Properties), and Vanilla JS
+            • Mobile-first, fully responsive, and accessible
+            • Features streamlined dark/light mode and cleaner code.
             
             Contact: Built by Zoto with good vibes ✨
         `);
